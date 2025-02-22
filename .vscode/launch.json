@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug PushSwap",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/PushSwap/a.out",
+            "args": ["42", "84", "126"], 
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/PushSwap",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for GDB",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
