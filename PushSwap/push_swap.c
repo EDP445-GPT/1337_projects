@@ -122,6 +122,11 @@ int	main(int ac, char **av)
 		i++;
 	}
 	check_duplicate(&stack_a);
-	mini_get_next_line();
+	// mini_get_next_line();
+	while(stack_a)
+	{
+		printf("this is the content : %d\n", stack_a->data);
+		stack_a = stack_a->next;
+	}
 	return (0);
 }
