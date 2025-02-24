@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 20:18:34 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/02/22 15:11:12 by codespace        ###   ########.fr       */
+/*   Updated: 2025/02/24 09:41:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	main(int ac, char **av)
 		}
 		i++;
 	}
-	check_duplicate(&stack_a);
+	check_duplicate(&stack_a); 
 	position(&stack_a);
 	indexing(&stack_a);
 	pushing_b(&stack_a, &stack_b);

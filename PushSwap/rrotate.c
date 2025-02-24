@@ -46,7 +46,7 @@ void	rrb(t_stack **stack)
 
 void	rrr(t_stack **stacka, t_stack **stackb)
 {
-	rrotate(stacka);
-	rrotate(stackb);
+	rra(stacka);
+	rrb(stackb);
 	write(1, "rrr\n", 3);
 }
