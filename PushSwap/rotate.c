@@ -1,50 +1,34 @@
 #include "header.h"
 
-void	ra(t_stack **stack)
+void	ra(t_stack **head)
 {
-	t_stack	*tmp;
-	t_stack *ptr;
+	t_stack	*tail;
 
-	if (!stack || !(*stack) || !((*stack)->next))
+	if (*head == NULL || (*head)->next == NULL)
 		return ;
-	tmp = ft_lstnew((*stack)->data);
-	ptr = *stack;
-	while(ptr)
-	{
-		ptr->data = (ptr->next)->data;
-		ptr = ptr->next;
-		if(ptr->next == NULL)
-		{
-			ptr->data = tmp->data;
-			break;
-		}
-	}
-	ft_lstclear(&tmp);
+	tail = *head;
+	while (tail->next != NULL)
+		tail = tail->next;
+	tail->next = *head;
+	*head = (*head)->next;
+	tail->next->next = NULL;
 	write(1, "ra\n", 3);
 }
-
-void	rb(t_stack **stack)
+void	rb(t_stack **head)
 {
-	t_stack	*tmp;
-	t_stack *ptr;
+	t_stack	*tail;
 
-	if (!stack || !(*stack) || !((*stack)->next))
+	if (*head == NULL || (*head)->next == NULL)
 		return ;
-	tmp = ft_lstnew((*stack)->data);
-	ptr = *stack;
-	while(ptr)
-	{
-		ptr->data = (ptr->next)->data;
-		ptr = ptr->next;
-		if(ptr->next == NULL)
-		{
-			ptr->data = tmp->data;
-			break;
-		}
-	}
-	ft_lstclear(&tmp);
+	tail = *head;
+	while (tail->next != NULL)
+		tail = tail->next;
+	tail->next = *head;
+	*head = (*head)->next;
+	tail->next->next = NULL;
 	write(1, "rb\n", 3);
 }
+
 
 void	rr(t_stack **stacka, t_stack **stackb)
 {

@@ -19,7 +19,7 @@ void	rra(t_stack **stack)
 		ptr = ptr->next;
 	}
 	ft_lstadd_front(stack, tmp);
-	write(1, "rra\n", 3);
+	write(1, "rra\n", 4);
 }
 
 void	rrb(t_stack **stack)
@@ -41,12 +41,12 @@ void	rrb(t_stack **stack)
 		ptr = ptr->next;
 	}
 	ft_lstadd_front(stack, tmp);
-	write(1, "rrb\n", 3);
+	write(1, "rrb\n", 4);
 }
 
 void	rrr(t_stack **stacka, t_stack **stackb)
 {
 	rra(stacka);
 	rrb(stackb);
-	write(1, "rrr\n", 3);
+	write(1, "rrr\n", 4);
 }

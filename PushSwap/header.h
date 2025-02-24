@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 17:37:28 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/02/24 09:45:29 by codespace        ###   ########.fr       */
+/*   Updated: 2025/02/24 11:55:28 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ typedef struct s_stack
 {
 	int				data;
 	int				idx;
-	int				pos;
 	struct s_stack	*next;
 }t_stack;
 
@@ -41,8 +40,8 @@ void			rrr(t_stack **stacka, t_stack **stackb);
 void			rr(t_stack **stacka, t_stack **stackb);
 void			ft_lstadd_front(t_stack **lst, t_stack *new);
 void			indexing(t_stack **stack_a);
-void			position(t_stack **stack_a);
 void			pushing_b(t_stack **stack_a, t_stack **stack_b);
+void			pushing_a(t_stack **stack_a, t_stack **stack_b);
 int				ft_lstsize(t_stack *lst);
 
 #endif
