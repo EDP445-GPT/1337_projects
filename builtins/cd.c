@@ -1,0 +1,112 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/06 11:15:12 by mboutahi          #+#    #+#             */
+/*   Updated: 2025/07/12 15:56:26 by mboutahi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../header.h"
+void    update_env_pwd(char *new_cwd, t_env_copy *env)
+{
+    while (env)
+    {
+        if (ft_strcmp("PWD", env->name) == 0)
+        {
+            free(env->value);
+            env->value = strdup(new_cwd);
+        }
+
+        env = env->next;
+    }
+}
+void    update_env_oldpwd(char *old_cwd, t_env_copy *env)
+{
+    while (env)
+    {
+        if (ft_strcmp("OLDPWD", env->name) == 0)
+        {
+            free(env->value);
+            env->value = strdup(old_cwd);
+        }
+
+        env = env->next;
+    }
+}
+char    *get_home_direc(t_env_copy *env)
+{
+    while (env)
+    {
+        if (ft_strcmp("HOME", env->name) == 0)
+        {
+            return (env->value);
+        }
+        env = env->next;
+    }
+    return NULL;
+}
+void    ft_cd(t_command **cmd, t_env_copy *env)
+{
+    char new_cwd[MAX_PATH];
+    char *old_cwd;
+    char *target;
+    struct stat check;
+    if (!(cmd[0]->args[1]))
+    {
+        target = get_home_direc(env);
+        if (!target)
+        {
+            fprintf(stderr, "bash: cd: HOME not set\n");
+            update_environment(env, "?", "1");
+            return;
+        }
+
+    }
+    else if ((cmd[0]->args[2]) != NULL)
+    {
+    fprintf(stderr, "bash: cd: too many arguments\n");
+    update_environment(env, "?", "1");
+    return;
+    }
+    else
+        target = cmd[0]->args[1];
+    old_cwd = getcwd(NULL, 0);
+    if (cmd[0]->args[1])
+    {
+         if (stat(cmd[0]->args[1], &check) == -1)
+		{
+			dprintf(2,"bash: cd: %s %s\n", cmd[0]->args[1], strerror(errno)); //change to ft_putstr_fd
+			update_environment(env, "?", "1");
+            return;
+		}
+		if (!S_ISDIR(check.st_mode))
+		{
+			perror("cd:");
+			update_environment(env, "?", "1");
+            return ;
+		}
+		// free(command_path), command_path = NULL;
+        
+    }
+    if (chdir(target) != 0)
+    {
+         dprintf(2, "bash: cd: %s: %s\n", target, strerror(errno));
+        free(old_cwd);
+        update_environment(env, "?", "1");
+        return;
+    }
+    if(!getcwd(new_cwd, sizeof(new_cwd)))
+    {
+    perror("bash: cd: getcwd failed");
+    free(old_cwd);
+    update_environment(env, "?", "1");
+    return;
+    }
+    update_env_pwd(new_cwd, env);
+    update_env_oldpwd(old_cwd, env);
+    update_environment(env, "?", "0");
+}
