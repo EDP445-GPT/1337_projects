@@ -1,5 +1,12 @@
 #include "../header.h"
 
+int is_builtin(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset") || !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit"));
+}
+
 char **struct_to_arr_env(t_env_copy *env)
 {
 	int i;
@@ -60,13 +67,35 @@ void exec_command(t_command **cmd, t_env_copy *env)
 	i = 0;
 	prev_pipe = -1;
 	pids = 0;
+	// printf("  arg[%d] -> |%s|\n", i, cmd[0]->args[0]);
+if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) && 
+	(!cmd[0]->redirctions || !cmd[0]->redirctions[0]) &&
+    !cmd[1])
+    	return;
+	else if (cmd[0] && (!cmd[0]->args || (cmd[0]->args[0] && cmd[0]->args[0][0] == '\0')) &&
+		(!cmd[0]->redirctions || !cmd[0]->redirctions[0]) && !cmd[1])
+	{
+		dprintf(2, "bash: : command not found\n");
+		update_environment(env, "?", "127");
+		return;
+	}
+	else if (cmd[0] && (!cmd[0]->args || (cmd[0]->args[0] && cmd[0]->args[0][0] == '.' && cmd[0]->args[0][1] == '\0')) &&
+		(!cmd[0]->redirctions || !cmd[0]->redirctions[0]) && !cmd[1])
+	{
+		dprintf(2, "bash: %s: filename argument required\n", cmd[0]->args[0]);
+		dprintf(2, "%s: usage: %s: filename [arguments]\n", cmd[0]->args[0], cmd[0]->args[0]);
+		update_environment(env, "?", "2");
+		return;
+	}
+
 	if (!cmd[1] && ft_strcmp(cmd[0]->args[0], "export") == 0)
 	{
 		ft_export(cmd, env);
 	}
 	else if (!cmd[1] && ft_strcmp(cmd[i]->args[0], "cd") == 0)
 		ft_cd(cmd, env);
-	else if (!cmd[1] &&  ft_strcmp(cmd[i]->args[0], "unset") == 0)
+
+	else if (!cmd[1] && ft_strcmp(cmd[i]->args[0], "unset") == 0)
 		ft_unset(env, cmd[i]->args);
 	else if (!cmd[1] && ft_strcmp(cmd[i]->args[0], "exit") == 0)
 	{
@@ -79,16 +108,20 @@ void exec_command(t_command **cmd, t_env_copy *env)
 
 		while (cmd[i])
 		{
-			if ((cmd[i]->args) && (cmd[i]->args[0]))
-			{
-					command = check_valid_path(path, cmd[i]->args[0]);
-					if(!command)
-					{
-						dprintf(2,"bash: %s: command not found\n", cmd[i]->args[0]);
-						update_environment(env, "?", "127");
-						return;
-					}
-			}
+			// if ((cmd[i]->args) && (cmd[i]->args[0]) && !is_builtin(cmd[i]->args[0]))
+			// {
+			// 	if (ft_strchr(cmd[i]->args[0], '/'))
+        	// 		command = ft_strdup(cmd[i]->args[0]); 
+			// 	else
+			// 		command = check_valid_path(path, cmd[i]->args[0]);
+			// 	if (!command)
+			// 	{
+			// 		dprintf(2, "bash: %s: command not found\n", cmd[i]->args[0]);
+			// 		update_environment(env, "?", "127");
+			// 		// return;
+			// 	}
+
+			// }
 
 			if (cmd[i + 1])
 				pipe(fd);
@@ -104,16 +137,31 @@ void exec_command(t_command **cmd, t_env_copy *env)
 				{
 					dup2(fd[1], STDOUT_FILENO);
 					close(fd[1]);
-					close(fd[0]); 
+
+					close(fd[0]);
 				}
 				if (cmd[i]->redirctions)
 				{
-					handle_redirection(cmd[i]);
+						handle_redirection(cmd[i], env);
 				}
 				if ((!cmd[i]->args) || (!cmd[i]->args[0]))
 				{
 					exit(0);
 				}
+				if ((cmd[i]->args) && (cmd[i]->args[0]) && !is_builtin(cmd[i]->args[0]))
+			{
+				if (ft_strchr(cmd[i]->args[0], '/'))
+        			command = ft_strdup(cmd[i]->args[0]); 
+				else
+					command = check_valid_path(path, cmd[i]->args[0]);
+				if (!command)
+				{
+					dprintf(2, "bash: %s: command not found\n", cmd[i]->args[0]);
+					update_environment(env, "?", "127");
+					exit(127);
+				}
+
+			}
 				if (ft_strcmp(cmd[i]->args[0], "export") == 0)
 				{
 					ft_export(cmd, env);
@@ -131,8 +179,7 @@ void exec_command(t_command **cmd, t_env_copy *env)
 				}
 				else if (ft_strcmp(cmd[i]->args[0], "exit") == 0)
 				{
-					ft_exit(cmd[0]->args, env);
-					exit(0);
+					ft_exit(cmd[i]->args, env);
 				}
 				else if ((ft_strcmp(cmd[i]->args[0], "pwd") == 0) || (ft_strcmp(cmd[i]->args[0], "PWD") == 0))
 				{
@@ -151,11 +198,18 @@ void exec_command(t_command **cmd, t_env_copy *env)
 				}
 				else
 				{
-					// execve(command, cmd[i]->args, envp);
+					// struct stat st;
+					// if (stat(command, &st) == -1 && errno == ENOENT)
+					// {
+					// 	dprintf(2, "bash: %s: command not found\n", cmd[i]->args[0]);
+					// 	update_environment(env, "?", "127");
+					// 	exit(126);
+					// }
 					if (execve(command, cmd[i]->args, envp) == -1)
 					{
 						if (errno == EISDIR)
 							dprintf(2, "bash: %s: is a directory\n", cmd[i]->args[0]);
+
 						else 
 							dprintf(2,"bash: %s %s\n", cmd[i]->args[0], strerror(errno)); //change to ft_putstr_fd
 
@@ -170,6 +224,7 @@ void exec_command(t_command **cmd, t_env_copy *env)
 							exit(126);
 						}
 					}
+
 
 				}
 			}
@@ -193,6 +248,22 @@ void exec_command(t_command **cmd, t_env_copy *env)
 				(ft_get_env_node("?", env))->value = ft_itoa(WEXITSTATUS(status));
 			while (wait(NULL) > 0)
 				;
-		}
+			if (i-1 >= 0 && cmd[i-1]->args
+            && ft_strcmp(cmd[i-1]->args[0], "exit") == 0)
+        	{
+				int code;
+
+				if (WIFEXITED(status))
+				{
+					code = WEXITSTATUS(status);
+					update_environment(env, "?", ft_itoa(code));
+				}
+				else
+				{
+					code = 0;
+					update_environment(env, "?", ft_itoa(code));
+				}
+        	}
+    	}
 	}
 }

@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/05 13:08:30 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/12 17:04:43 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../header.h"
 
@@ -43,18 +33,38 @@ char	*check_valid_path(char *path, char *cmd)
 	char	*temp;
 	char	*command_path;
 	struct 	stat checker;
+	char	cwd[MAX_PATH];
+	i = 0;
 	if (!path)
-		return (NULL);
+	{
+		getcwd(cwd, sizeof(cwd));
+		sub_paths = ft_split(cwd, '/');
+		while (sub_paths[i])
+		{
+			temp = ft_strjoin(sub_paths[i], "/");
+			command_path =  ft_strjoin(temp, cmd);
+			if (stat(command_path, &checker) == 0 )
+			{
+			// free(free_paths);
+				return (command_path);
+			}
+		// free(command_path), command_path = NULL;
+		i++;
+		}
+		return cmd;
+	}
 	sub_paths = ft_split(path, ':');
 	if (!sub_paths)
 		return (NULL);
 	i = 0;
+
 	if (ft_strchr(cmd, '/'))
 	{
 		if (stat(cmd, &checker) == 0 )
 			return (cmd);
 		return (NULL);
 	}
+
 	while (sub_paths[i])
 	{
 		temp = ft_strjoin(sub_paths[i], "/");

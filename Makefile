@@ -23,7 +23,8 @@ SRCS         = main.c tokenizer_one/custom_split.c tokenizer_one/tokenizer_one.c
                expander/expander.c execution/execution.c execution/exec_utils.c builtins/export_not_real.c \
                builtins/cd.c lexer/update_env.c lexer/lexer_custom_split.c \
 			   builtins/echo.c builtins/pwd.c builtins/exit.c builtins/unset.c builtins/env.c execution/redirect.c \
-			   expander/ft_split_args_file.c  execution/herdoc.c
+			   expander/ft_split_args_file.c  execution/herdoc.c  builtins/cd_utils.c
+
 
 OBJ_SRCS     = $(SRCS:.c=.o)
 

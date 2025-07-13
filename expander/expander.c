@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 10:55:24 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/11 13:47:20 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/13 17:56:22 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ char *ft_get_env_value(char *name, t_env_copy *env)
 	while(s[i] && s[i] != ' ' && s[i]!= '$' && (ft_isalnum(s[i]) || s[i] == '_' || s[i] == '?')) // stops at not aphanum or underscore or question mark
 	{
 		i++;
+		if(s[i - 1] == '?')
+			break ;
 	}
 	if( i != 0)
 	{

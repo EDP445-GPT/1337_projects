@@ -17,6 +17,8 @@ int contain_char(char *str)
 	int i;
 
 	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
 	while(str[i])
 	{
 		if(!isdigit(str[i]))
@@ -32,7 +34,7 @@ int valid_argument(char **var)
 	length = count_length(var);
 	if (length == 0)
 		return (3);
-	if(contain_char(var[0]))
+	if(contain_char(var[0]) || !var[0][0])
 		return (1);
 	if (length > 1)
 		return (0);
@@ -44,24 +46,26 @@ void ft_exit(char **arguments, t_env_copy *env)
 	int flag;
 	unsigned char c;
 	
-	printf("exit\n");
 	c = 0;
 	flag = valid_argument(arguments + 1);
+	printf("exit\n");
 	if (flag == 1)
 	{
-		printf("exit: %s: numeric argument required\n", arguments[1]);
+		ft_putstr_fd("bash: exit: ", 2);
+		ft_putstr_fd(arguments[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
 		update_environment(env, "?", "255");
 		exit(255);
 	}
 	else if (flag == 0)
 	{
-		printf("exit: too many arguments\n");
-		update_environment(env, "?", "2");
+		ft_putstr_fd("bash: exit: too many arguments\n", 2);
+		update_environment(env, "?", "1");
 		return ;
 	}
 	else if (flag == 2)
 	{
-		c = (unsigned char)ft_atoi(arguments[1]);
+		c = ft_atoi(arguments[1]);
 		char *exit_code = ft_itoa(c);
 		update_environment(env, "?", exit_code);
 		free(exit_code);

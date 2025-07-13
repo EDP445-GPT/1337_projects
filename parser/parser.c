@@ -1,4 +1,3 @@
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 10:30:55 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/06 10:32:55 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:08:18 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +80,12 @@ t_command **cmd_allocation(t_tokens *tokens)
 			cmd[i]->redirctions[g] = malloc(sizeof(t_redic));
 			g++;
 		}
+		g = 0;
+		// while (cmd[i]->redirctions && cmd[i]->redirctions[g] && g < redirs + 1)
+		// {
+		// 	cmd[i]->redirctions[g]->type = -1 ;
+		// 	g++;
+		// }
 		if (!cmd[i]->args || !cmd[i]->redirctions)
 			return (perror("malloc failed"), NULL);
 
@@ -99,6 +104,7 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 	char **file;
 	char **arguments;
 	int arguments_flag;
+	t_tokens *tmps = tokens;
 
 	k = 0;
 	i = 0;
@@ -138,6 +144,12 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 					}
 					while(arguments[arguments_flag])
 					{
+						if (cmd[j]->args[0] == NULL)
+						{
+							cmd[j]->args[0] = ft_strdup(arguments[arguments_flag]);
+							arguments_flag++;
+							continue ;
+						}
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], " ");
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], arguments[arguments_flag]);
 						arguments_flag++;
@@ -156,7 +168,7 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 					cmd[j]->redirctions[k]->file = ft_strdup(arguments[0]);
 					if (arguments[0][0] == '$')
 					{
-						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p);
+						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p); // to handle!!!!!!!!!
 						file = ft_split_args(cmd[j]->redirctions[k]->file, p);
 						if (file[1])
 						{
@@ -166,6 +178,12 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 					}
 					while(arguments[arguments_flag])
 					{
+						if (cmd[j]->args[0] == NULL)
+						{
+							cmd[j]->args[0] = ft_strdup(arguments[arguments_flag]);
+							arguments_flag++;
+							continue ;
+						}
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], " ");
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], arguments[arguments_flag]);
 						arguments_flag++;
@@ -188,6 +206,12 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 				}
 				while(arguments[arguments_flag])
 				{
+					if (cmd[j]->args[0] == NULL)
+					{
+						cmd[j]->args[0] = ft_strdup(arguments[arguments_flag]);
+						arguments_flag++;
+						continue ;
+					}
 					cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], " ");
 					cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], arguments[arguments_flag]);
 					arguments_flag++;
@@ -214,6 +238,12 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 					}
 					while(arguments[arguments_flag])
 					{
+						if (cmd[j]->args[0] == NULL)
+						{
+							cmd[j]->args[0] = ft_strdup(arguments[arguments_flag]);
+							arguments_flag++;
+							continue ;
+						}
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], " ");
 						cmd[j]->args[0] = ft_strjoin(cmd[j]->args[0], arguments[arguments_flag]);
 						arguments_flag++;
@@ -252,23 +282,31 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 	{
 		cmd[j]->args = ft_split_args(cmd[j]->args[0], p);
 	}
-
-	if (heredoc(cmd, p))
+	if(check_herdoc(tmps))
+	{
+		if (heredoc(cmd, p))
+			exec_command(cmd, p);
+	}
+	else
 		exec_command(cmd, p);
-
-	// int x = 0;
-	// 			 i = 0;
-	// // while (cmd[k] && cmd[k]->args)
-	// // {
-	// 		printf("Command %s:\n", cmd[3]->args[i]);
+	// while (cmd[k] && cmd[k]->args)
+	// {
+	// 		printf("Command %s:\n", cmd[k]->args[i]);
 
 	// 	// Print args
 	// 	 i = 0;
-	// 	// while ( cmd[k]->args[i])
-	// 	// {
-	// 		printf("  arg[%d] -> |%s|\n", i, cmd[3]->args[1]);
+	// 	while ( cmd[k]->args[i])
+	// 	{
+			// printf("  arg[%d] -> |%s|\n", i, cmd[0]->args[0]);
 	// 		i++;
-	// 	// }
+	// 	}
+	// 	k++;
+	// }
+		// exit(1);
+
+
+	// int x = 0;
+				 i = 0;
 
 	// 	// Print redirections
 	// 	x = 0;

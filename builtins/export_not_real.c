@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export_not_real.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/05 16:33:28 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/11 21:32:04 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../header.h"
 // t_env_copy	*new_env_node(char *name, char *value)
 // {
@@ -47,6 +35,8 @@
 int	ft_isalnum_env(char *s)
 {
 	int i = 0;
+	if (!s[i])
+		return (0);
 	while (s[i] &&  ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') ||
 		 (s[i] == '_') || (s[i] >= '0' && s[i] <= '9')))
 	{
@@ -94,7 +84,7 @@ void    ft_export(t_command **cmd, t_env_copy *env)
 		name = ft_substr(cmd[0]->args[x], 0, j);
 		if (!ft_isalnum_env(name))
 		{
-			printf("bash: export: `%s': not a valid identifier\n", cmd[0]->args[x]);
+			dprintf(2, "bash: export: `%s': not a valid identifier\n", cmd[0]->args[x]);
 			update_environment(env, "?", "1");
 			x++;
 		}

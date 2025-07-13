@@ -26,10 +26,11 @@ void ft_unset(t_env_copy *env, char **var)
 	{
 	if (!is_valid_var_name(var[i]))
 	{
-		printf("unset: `%s': not a valid identifier\n", var[i]);
+		ft_putstr_fd("bash: unset: `", 2);
+		ft_putstr_fd(var[i], 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
 		update_environment(env, "?", "1");
-		// exit(1);
-		return ;//!to be fixed
+		return ;
 	}
 	node = find_key(env, var[i]);
 	if (node)
@@ -38,59 +39,3 @@ void ft_unset(t_env_copy *env, char **var)
 	}
 	update_environment(env, "?", "0");
 }
-
-
-// void add_node(t_env_copy **env, char *name, char *value)
-// {
-//     t_env_copy *new_node = malloc(sizeof(t_env_copy));
-//     t_env_copy *temp = *env;
-
-//     new_node->name = strdup(name);
-//     new_node->value = strdup(value);
-//     new_node->next = NULL;
-
-//     if (!*env)
-//     {
-//         *env = new_node;
-//         return;
-//     }
-
-//     while (temp->next)
-//         temp = temp->next;
-//     temp->next = new_node;
-// }
-
-// // Helper to print the list
-// void print_env(t_env_copy *env)
-// {
-//     while (env)
-//     {
-//         printf("%s=%s\n", env->name, env->value);
-//         env = env->next;
-//     }
-// }
-
-// int main()
-// {
-//     t_env_copy *env = NULL;
-
-//     // Create some env variables
-//     add_node(&env, "USER", "chatgpt");
-//     add_node(&env, "PATH", "/usr/bin");
-//     add_node(&env, "HOME", "/home/chatgpt");
-//     add_node(&env, "SHELL", "/bin/bash");
-
-//     printf("Before unset:\n");
-//     print_env(env);
-
-//     // Simulate command: unset PATH HOME
-//     char *unset_cmd[] = {"unset", "PATH", "H!OME", "JBELKERF", NULL};
-//     unset(env, unset_cmd);
-
-//     printf("\nAfter unset:\n");
-//     print_env(env);
-
-//     // Free remaining list nodes here (not shown)
-
-//     return 0;
-// }

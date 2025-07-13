@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:35:42 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/11 21:32:17 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/13 09:18:36 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 
 
-void    handle_redirection(t_command *cmd)
+void    handle_redirection(t_command *cmd, t_env_copy *env)
 {
     int i;
     int fd;
@@ -36,7 +36,8 @@ void    handle_redirection(t_command *cmd)
             fd = open(cmd->redirctions[i]->file, O_RDONLY, 0777);
             if(fd < 0)
             {
-                perror("bash");
+                dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);
+                update_environment(env, "?", "1");
                 exit(1);
             }
             dup2(fd, STDIN_FILENO);
@@ -50,7 +51,8 @@ void    handle_redirection(t_command *cmd)
             fd = open(cmd->redirctions[i]->file, O_CREAT | O_TRUNC | O_WRONLY, 0777);
             if(fd < 0)
             {
-                perror("bash");
+                dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);
+                update_environment(env, "?", "1");
                 exit(1);
             }
             dup2(fd, STDOUT_FILENO);
@@ -63,7 +65,8 @@ void    handle_redirection(t_command *cmd)
             fd = open(cmd->redirctions[i]->file, O_CREAT | O_APPEND | O_WRONLY, 0777);
             if(fd < 0)
             {
-                perror("bash");
+                dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);
+                update_environment(env, "?", "1");
                 exit(1);
             }
             dup2(fd, STDOUT_FILENO);

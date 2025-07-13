@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 #define MAX_PATH 1024
 typedef enum {
@@ -107,9 +108,14 @@ void 		ft_unset(t_env_copy *env, char **var);
 t_env_copy	*find_key(t_env_copy *env, char *key);
 void		*heredoc(t_command **cmd, t_env_copy *env);
 void		signal_handler();
-void    	handle_redirection(t_command *cmd);
+void   		 handle_redirection(t_command *cmd, t_env_copy *env);
 char		*ft_substr_expand(char const *s, unsigned int start, size_t len);
 char		**ft_split_args_file(char *str);
 char		*skip_qoute(char *str);
 char		*check_valid_path(char *path, char *cmd);
+void		add_to_list_pwd(t_env_copy *env,char *name, char *value);
+t_env_copy	*new_node_pwd(char *name, char *value);
+// char    **ft_split_args_file_qoute(char *str);
+int			check_herdoc(t_tokens *tokens);
+
 #endif

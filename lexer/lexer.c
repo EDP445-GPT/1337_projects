@@ -80,22 +80,26 @@ int check_pipes(char **tokens)
 		{
 			if ((i - 1) < 0)
 			{
-				printf("syntax error near unexpected token `|'\n");
+
+				dprintf(2, "syntax error near unexpected token `|'\n");
 				return (0);
 			}
 			if (!tokens[i + 1])
 			{
-				printf("syntax error near unexpected token `newline'\n");
+
+				dprintf(2, "syntax error near unexpected token `newline'\n");
+
 				return (0);
 			}
 			if (is_pipe_token(tokens[i + 1]))
 			{
-				printf("syntax error near unexpected token `||'\n");
+				dprintf(2, "syntax error near unexpected token `||'\n");
+
 				return (0);
 			}
-			if (is_redirection_token(tokens[i + 1]))
+			if (((i - 1) >= 0 && !tokens[i - 1]) && is_redirection_token(tokens[i + 1]))
 			{
-				printf("syntax error near unexpected token `%s'\n", tokens[i + 1]);
+				dprintf(2, "syntax error near unexpected token `%s'\n", tokens[i + 1]);
 				return (0);
 			}
 		}
@@ -116,33 +120,43 @@ int check_redirections(char **tokens)
 		{
 			if (!tokens[i + 1])
 			{
-				printf("syntax error near unexpected token `newline'\n");
+
+				dprintf(2, "syntax error near unexpected token `newline'\n");
+
 				return (0);
 			}
 			if (is_pipe_token(tokens[i + 1]))
 			{
-				printf("syntax error near unexpected token `|'\n");
+				dprintf(2, "syntax error near unexpected token `|'\n");
+
 				return (0);
 			}
 			if (is_redirection_token(tokens[i + 1]))
 			{
-				printf("syntax error near unexpected token `%s'\n", tokens[i + 1]);
+
+				dprintf(2, "syntax error near unexpected token `%s'\n", tokens[i + 1]);
+
 				return (0);
 			}
 			if(is_only_space(tokens[i + 1]))
 			{
-				printf("syntax error near unexpected token `%s'\n", tokens[i + 2]);
+
+				dprintf(2, "syntax error near unexpected token `%s'\n", tokens[i + 2]);
+
 				return (0);
 			}
 		}
 		if (strcmp(tokens[i], ">") == 0 && tokens[i + 1] && strcmp(tokens[i + 1], ">") == 0)
 		{
-			printf("syntax error near unexpected token `>'\n");
+
+			dprintf(2, "syntax error near unexpected token `>'\n");
+
 			return (0);
 		}
 		if (strcmp(tokens[i], "<") == 0 && tokens[i + 1] && strcmp(tokens[i + 1], "<") == 0)
 		{
-			printf("syntax error near unexpected token `<'\n");
+
+			dprintf(2, "syntax error near unexpected token `<'\n");
 			return (0);
 		}
 		i++;
@@ -175,7 +189,8 @@ int lexer(char *str, t_env_copy *env)
 
 	if (!check_quotes(str))
 	{
-		printf("syntax error: unclosed quotes\n");
+
+		dprintf(2, "syntax error: unclosed quotes\n");
 		update_environment(env, "?", "1");
 		return (0);
 	}

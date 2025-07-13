@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tokenizer_one.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/31 11:04:33 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/11 10:53:59 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../header.h"
 #include <stdio.h>
@@ -72,7 +62,7 @@ t_tokens	 *tokenizer(char *str)
 				type = TOKEN_SINGLE_QUOTE;
 				value = args[i];
 
-				add_to_list(&tokens, type, value);
+				add_to_list(&tokens, type, value); 
 			}
 			else if (is_double_q(args[i]))
 			{
