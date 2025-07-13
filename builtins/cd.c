@@ -2,14 +2,10 @@
 #include "../header.h"
 int update_env_pwd(char *new_cwd, t_env_copy *env)
 {
-
-	int flag = 0;
-
 	while (env)
 	{
 		if (ft_strcmp("PWD", env->name) == 0)
 		{
-			flag = 1;
 			free(env->value);
 			env->value = strdup(new_cwd);
 			return 0;
@@ -20,13 +16,10 @@ int update_env_pwd(char *new_cwd, t_env_copy *env)
 }
 int update_env_oldpwd(char *old_cwd, t_env_copy *env)
 {
-	int flag = 0;
-
 	while (env)
 	{
 		if (ft_strcmp("OLDPWD", env->name) == 0)
 		{
-			flag = 1;
 			free(env->value);
 			env->value = strdup(old_cwd);
 			return 0;

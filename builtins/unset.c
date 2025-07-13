@@ -24,17 +24,17 @@ void ft_unset(t_env_copy *env, char **var)
 	i = 1;
 	while(var[i])
 	{
-	if (!is_valid_var_name(var[i]))
-	{
-		ft_putstr_fd("bash: unset: `", 2);
-		ft_putstr_fd(var[i], 2);
-		ft_putstr_fd("': not a valid identifier\n", 2);
-		update_environment(env, "?", "1");
-		return ;
-	}
-	node = find_key(env, var[i]);
-	if (node)
-		lst_delete_node(&env, node);
+		if (!is_valid_var_name(var[i]))
+		{
+			ft_putstr_fd("bash: unset: `", 2);
+			ft_putstr_fd(var[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			update_environment(env, "?", "1");
+			return ;
+		}
+		node = find_key(env, var[i]);
+		if (node)
+			lst_delete_node(&env, node);
 		i++;
 	}
 	update_environment(env, "?", "0");

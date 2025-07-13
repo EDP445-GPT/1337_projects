@@ -181,9 +181,7 @@ int check_redirections(char **tokens)
 int lexer(char *str, t_env_copy *env)
 {
 	char	**tokens;
-	int		i;
 
-	i = 0;
 	if (!str)
 		return (1);
 
