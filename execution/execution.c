@@ -120,14 +120,13 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 			// 		update_environment(env, "?", "127");
 			// 		// return;
 			// 	}
-
-			// }
-
 			if (cmd[i + 1])
 				pipe(fd);
 			pid = fork();
 			if (pid == 0)
 			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				if (prev_pipe != -1)
 				{
 					dup2(prev_pipe, STDIN_FILENO);
@@ -160,7 +159,6 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 					update_environment(env, "?", "127");
 					exit(127);
 				}
-
 			}
 				if (ft_strcmp(cmd[i]->args[0], "export") == 0)
 				{
@@ -209,10 +207,8 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 					{
 						if (errno == EISDIR)
 							dprintf(2, "bash: %s: is a directory\n", cmd[i]->args[0]);
-
 						else 
 							dprintf(2,"bash: %s %s\n", cmd[i]->args[0], strerror(errno)); //change to ft_putstr_fd
-
 						if (errno == ENOENT)
 						{
 							update_environment(env, "?", "127");
@@ -224,8 +220,6 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 							exit(126);
 						}
 					}
-
-
 				}
 			}
 			else if (pid > 0)
@@ -243,16 +237,17 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 		}
 		if (pids)
 		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
 			waitpid(pids, &status, 0);
 			if (WIFEXITED(status))
 				(ft_get_env_node("?", env))->value = ft_itoa(WEXITSTATUS(status));
 			while (wait(NULL) > 0)
 				;
-			if (i-1 >= 0 && cmd[i-1]->args
-            && ft_strcmp(cmd[i-1]->args[0], "exit") == 0)
-        	{
-				int code;
-
+			signal(SIGINT, signal_handler);
+			if (i-1 >= 0 && cmd[i-1]->args && ft_strcmp(cmd[i-1]->args[0], "exit") == 0)
+			{
+				int code;	
 				if (WIFEXITED(status))
 				{
 					code = WEXITSTATUS(status);
@@ -263,7 +258,27 @@ if (cmd[0] && (!cmd[0]->args || !cmd[0]->args[0]) &&
 					code = 0;
 					update_environment(env, "?", ft_itoa(code));
 				}
-        	}
-    	}
+			}
+			else
+			{
+				if (WIFEXITED(status))
+				{
+					update_environment(env, "?", ft_itoa(WEXITSTATUS(status)));
+				}
+				else if (WIFSIGNALED(status))
+				{
+					printf("\n");
+					if (WTERMSIG(status) == SIGINT)
+						update_environment(env, "?", ft_itoa(130));
+					if (WTERMSIG(status) == SIGQUIT)
+						update_environment(env, "?", ft_itoa(131));
+					if (WTERMSIG(status)==  SIGPIPE)
+					{
+						printf("im here\n");
+						update_environment(env, "?", ft_itoa(1));
+					}
+				}
+			}
+		}
 	}
 }

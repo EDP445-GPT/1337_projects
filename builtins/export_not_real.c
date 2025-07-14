@@ -38,7 +38,7 @@ int	ft_isalnum_env(char *s)
 	if (!s[i])
 		return (0);
 	while (s[i] &&  ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') ||
-		 (s[i] == '_') || (s[i] >= '0' && s[i] <= '9')))
+		 (s[i] == '_') ))
 	{
 		i++;
 	}
@@ -64,6 +64,11 @@ void    ft_export(t_command **cmd, t_env_copy *env)
 	{
 		while(env)
 		{
+			if (ft_strcmp(env->name, "?") == 0)
+			{
+				env = env->next;
+				continue ;
+			}
 			if (!env->value)
 			{
 				printf("declare -x %s\n", env->name);
@@ -82,7 +87,14 @@ void    ft_export(t_command **cmd, t_env_copy *env)
 			j++;
 		}
 		name = ft_substr(cmd[0]->args[x], 0, j);
-		if (!ft_isalnum_env(name))
+		if (name[0] == '-')
+		{
+			dprintf(2, "bash: export: %c%c: invalid option\n", name[0],name[1]);
+			update_environment(env, "?", "2");
+			x++;
+		}
+
+		else if (!ft_isalnum_env(name))
 		{
 			dprintf(2, "bash: export: `%s': not a valid identifier\n", cmd[0]->args[x]);
 			update_environment(env, "?", "1");
@@ -91,7 +103,7 @@ void    ft_export(t_command **cmd, t_env_copy *env)
 		else
 		{
 			j++;
-			while(cmd[0]->args[x] && cmd[0]->args[x][i])
+			while (cmd[0]->args[x] && cmd[0]->args[x][i])
 			{
 				i++;
 			}

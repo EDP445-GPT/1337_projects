@@ -1,20 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   linked_list_utils.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/14 13:07:25 by mmaarafi          #+#    #+#             */
+/*   Updated: 2025/07/14 13:08:25 by mmaarafi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../header.h"
-
-// int	lstsize(t_env_copy *lst)
-// {
-// 	int		i;
-// 	t_env_copy	*ptr;
-
-// 	i = 0;
-// 	ptr = lst;
-// 	while (ptr != NULL)
-// 	{
-// 		ptr = ptr->next;
-// 		i++;
-// 	}
-// 	return (i);
-// }
 
 t_env_copy	*lstnew(char *name, char *value)
 {
@@ -24,7 +20,7 @@ t_env_copy	*lstnew(char *name, char *value)
 	if (head == NULL)
 		return (NULL);
 	head->name = name;
-	if(value)
+	if (value)
 		head->value = value;
 	else
 		head->value = NULL;
@@ -53,7 +49,7 @@ void	lstadd_back(t_env_copy **lst, t_env_copy *new)
 	another_ptr->next = new;
 }
 
-void lst_delete_node(t_env_copy **lst, t_env_copy *node)
+void	lst_delete_node(t_env_copy **lst, t_env_copy *node)
 {
 	t_env_copy	*ptr;
 
@@ -81,28 +77,3 @@ void lst_delete_node(t_env_copy **lst, t_env_copy *node)
 		ptr = ptr->next;
 	}
 }
-
-// void	lstdelone(t_env_copy *lst)
-// {
-// 	if (!lst || !del)
-// 		return ;
-// 	del(lst->content);
-// 	free(lst);
-// }
-
-// void	lstclear(t_env_copy **lst)
-// {
-// 	t_env_copy	*ptr;
-
-// 	if (!del || !lst)
-// 		return ;
-// 	if (!*lst)
-// 		return ;
-// 	while (*lst)
-// 	{
-// 		ptr = (*lst)->next;
-// 		del((*lst)->content);
-// 		free(*lst);
-// 		*lst = ptr;
-// 	}
-// }

@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 20:42:39 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/07 11:28:29 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/14 11:45:25 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ void ft_env(t_env_copy *env)
 	ptr = env;
 	while(ptr != NULL)
 	{
+		if (ft_strcmp(env->name, "?") == 0)
+		{
+			env = env->next;
+			continue ;
+		}
 		if(!(ptr->value))
 		{
 			ptr = ptr->next;

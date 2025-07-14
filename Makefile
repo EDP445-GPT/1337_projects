@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
 	CC       = cc
-	CFLAGS   = -Wall -Wextra -Werror -fsanitize=address -g
+	CFLAGS   = -Wall -Wextra -Werror 
 	CPPFLAGS = -I/Users/mboutahi/.brew/opt/readline/include
 	LDFLAGS  = -L/Users/mboutahi/.brew/opt/readline/lib -lreadline -lhistory
 else 

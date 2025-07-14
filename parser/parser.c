@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/27 10:30:55 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/13 18:08:18 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../header.h"
 int cmd_counter(t_tokens *p)
 {
@@ -23,6 +11,17 @@ int cmd_counter(t_tokens *p)
 		p = p->next;
 	}
 	return (i);
+}
+int	find_expand(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && (str[i] == '\'' || str[i] == '\"'))
+		i++;
+	if (str[i] == '$')
+		return 1;
+	return 0;
 }
 
 t_command **cmd_allocation(t_tokens *tokens)
@@ -104,7 +103,6 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 	char **file;
 	char **arguments;
 	int arguments_flag;
-	t_tokens *tmps = tokens;
 
 	k = 0;
 	i = 0;
@@ -129,14 +127,14 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 				if (tokens->next)
 				{
 					arguments_flag = 1;
-					arguments = ft_split_args_file(tokens->next->value);
+					arguments = ft_split_args_file_qoute(tokens->next->value);
 					cmd[j]->redirctions[k]->file = ft_strdup(arguments[0]);
-					if (arguments[0][0] == '$')
+					if (find_expand(arguments[0]))
 					{
 						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p);
 						file = ft_split_args(cmd[j]->redirctions[k]->file, p);
 						// printf("%s", file);
-						if (file[1])
+						if (file[1] || !file[0])
 						{
 							write(2, "ambiguous redirect\n", 20);
 							update_environment(p, "?", "1");
@@ -164,15 +162,16 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 				if (tokens->next)
 				{
 					arguments_flag = 1;
-					arguments = ft_split_args_file(tokens->next->value);
+					arguments = ft_split_args_file_qoute(tokens->next->value);
 					cmd[j]->redirctions[k]->file = ft_strdup(arguments[0]);
-					if (arguments[0][0] == '$')
+					if (find_expand(arguments[0]))
 					{
-						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p); // to handle!!!!!!!!!
+						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p);
+						// skip_qoute(cmd[j]->redirctions[k]->file);                    // to handle!!!!!!!!!
 						file = ft_split_args(cmd[j]->redirctions[k]->file, p);
-						if (file[1])
+						if (file[1] || !file[0])
 						{
-							write(2, "ambiguous redirect\n", 20);
+							write(2, "bash: ambiguous redirect\n", 26);
 							update_environment(p, "?", "1");
 						}
 					}
@@ -223,14 +222,14 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 				if (tokens->next)
 				{
 					arguments_flag = 1;
-					arguments = ft_split_args_file(tokens->next->value);
+					arguments = ft_split_args_file_qoute(tokens->next->value);
 					cmd[j]->redirctions[k]->file = ft_strdup(arguments[0]);
-					if (arguments[0][0] == '$')
+					if (find_expand(arguments[0]))
 					{
 						cmd[j]->redirctions[k]->file = ft_expand(arguments[0], p);
 						file = ft_split_args(cmd[j]->redirctions[k]->file, p);
 						// printf("%s", file);
-						if (file[1])
+						if (file[1] || !file[0])
 						{
 							printf("bash: : ambiguous redirect\n");
 							update_environment(p, "?", "1");
@@ -282,13 +281,14 @@ void ft_parser(t_tokens *tokens, t_env_copy *p)
 	{
 		cmd[j]->args = ft_split_args(cmd[j]->args[0], p);
 	}
-	if(check_herdoc(tmps))
-	{
+	// if(check_herdoc(tmps))
+	// {
 		if (heredoc(cmd, p))
 			exec_command(cmd, p);
-	}
-	else
-		exec_command(cmd, p);
+	// }
+	// else
+	// 	exec_command(cmd, p);
+
 	// while (cmd[k] && cmd[k]->args)
 	// {
 	// 		printf("Command %s:\n", cmd[k]->args[i]);

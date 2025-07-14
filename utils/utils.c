@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:13:43 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/05 11:26:42 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:09:22 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header.h"
-#include <string.h>
 
 char	*ft_strdup_name(char *src)
 {
@@ -20,7 +19,7 @@ char	*ft_strdup_name(char *src)
 	char	*p;
 
 	length = 0;
-	while(src[length] != '=')
+	while (src[length] != '=')
 		length++;
 	p = malloc(length + 1);
 	if (p == NULL)
@@ -42,7 +41,7 @@ char	*ft_strdup_value(char *src)
 	char	*p;
 
 	length = 0;
-	while(src[length] != '=')
+	while (src[length] != '=')
 		length++;
 	src = src + length + 1;
 	length = strlen(src);

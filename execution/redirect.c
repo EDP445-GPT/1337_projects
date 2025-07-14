@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirect.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/07 17:35:42 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/13 09:18:36 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../header.h"
 
 // int tmp_out = dup(1);
@@ -33,7 +21,7 @@ void    handle_redirection(t_command *cmd, t_env_copy *env)
         if (cmd->redirctions[i]->type == IN)
         {
             old_fd = dup(0);
-            fd = open(cmd->redirctions[i]->file, O_RDONLY, 0777);
+            fd = open(cmd->redirctions[i]->file, O_RDONLY);
             if(fd < 0)
             {
                 dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);
@@ -48,7 +36,7 @@ void    handle_redirection(t_command *cmd, t_env_copy *env)
         else if (cmd->redirctions[i]->type == OUT)
         {
             old_fd = dup(1);
-            fd = open(cmd->redirctions[i]->file, O_CREAT | O_TRUNC | O_WRONLY, 0777);
+            fd = open(cmd->redirctions[i]->file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
             if(fd < 0)
             {
                 dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);
@@ -62,7 +50,7 @@ void    handle_redirection(t_command *cmd, t_env_copy *env)
         }
         else if (cmd->redirctions[i]->type == APPEND)
         {
-            fd = open(cmd->redirctions[i]->file, O_CREAT | O_APPEND | O_WRONLY, 0777);
+            fd = open(cmd->redirctions[i]->file, O_CREAT | O_APPEND | O_WRONLY, 0600);
             if(fd < 0)
             {
                 dprintf(2, "bash: %s: No such file or directory\n", cmd->redirctions[i]->file);

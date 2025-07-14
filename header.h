@@ -77,7 +77,6 @@ int			is_redirect_in(char *str);
 int			is_redirect_out(char *str);
 int			is_heredoc(char *str);
 int			is_append_out(char *str);
-int			is_single_q(char *str);
 t_tokens	*tokenizer(char *str);
 // int			lstsize(t_env_copy *lst);
 t_env_copy	*lstnew(char *name, char *value);
@@ -115,7 +114,6 @@ char		*skip_qoute(char *str);
 char		*check_valid_path(char *path, char *cmd);
 void		add_to_list_pwd(t_env_copy *env,char *name, char *value);
 t_env_copy	*new_node_pwd(char *name, char *value);
-// char    **ft_split_args_file_qoute(char *str);
-int			check_herdoc(t_tokens *tokens);
+char		**ft_split_args_file_qoute(char *str);
 
 #endif
