@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 11:59:37 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/14 12:07:50 by mmaarafi         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:09:55 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void	handle_overflow(char *str)
 {
-	ft_putstr_fd("bash: exit: ", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": numeric argument required\n", 2);
+	stder("bash: exit: ", 2);
+	stder(str, 2);
+	stder(": numeric argument required\n", 2);
 	exit(255);
 }
 

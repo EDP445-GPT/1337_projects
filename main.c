@@ -6,7 +6,7 @@
 /*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 13:10:01 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/14 13:21:34 by mmaarafi         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:40:32 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,24 @@
 t_env_copy	*environment_copy(char **envp)
 {
 	int			i;
-	char		*name;
-	char		*value;
 	t_env_copy	*original_ptr;
 	t_env_copy	*ptr;
 
 	i = 0;
 	if (!(*envp))
 	{
-		name = ft_strdup("?");
-		value = ft_strdup("0");
-		ptr = lstnew(name, value);
+		ptr = lstnew(ft_strdup("?"), ft_strdup("0"));
 		return (ptr);
 	}
-	name = ft_strdup_name(envp[i]);
-	value = ft_strdup_value(envp[i]);
-	original_ptr = lstnew(name, value);
+	original_ptr = lstnew(ft_strdup_name(envp[i]), ft_strdup_value(envp[i]));
 	i++;
 	while (envp[i])
 	{
-		name = ft_strdup_name(envp[i]);
-		value = ft_strdup_value(envp[i]);
-		ptr = lstnew(name, value);
+		ptr = lstnew(ft_strdup_name(envp[i]), ft_strdup_value(envp[i]));
 		lstadd_back(&original_ptr, ptr);
 		i++;
 	}
-	name = ft_strdup("?");
-	value = ft_strdup("0");
-	ptr = lstnew(name, value);
+	ptr = lstnew(ft_strdup("?"), ft_strdup("0"));
 	lstadd_back(&original_ptr, ptr);
 	return (original_ptr);
 }

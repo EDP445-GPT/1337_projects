@@ -1,124 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_not_real.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 04:05:39 by mboutahi          #+#    #+#             */
+/*   Updated: 2025/07/17 16:02:40 by mboutahi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header.h"
-// t_env_copy	*new_env_node(char *name, char *value)
-// {
-// 	t_env_copy    *tokens;
-	
-// 	tokens = malloc(sizeof(t_env_copy));
-// 	if (!tokens)
-// 		return (NULL);
-//     tokens->name = name;
-// 	tokens->value = value;
-// 	tokens->next = NULL;
-// 	return (tokens);
-// }
 
-// void	add_to_env_list(t_env_copy **env, char *name, char *value)
-// {
-// 	t_env_copy    *element;
-// 	t_env_copy    *temp;
-
-// 	element = new_env_node(name, value);
-// 	if (!element)
-// 		exit(1);
-// 	if ((*env) == NULL)
-// 	{
-// 		(*env) = element;
-// 	}
-// 	else
-// 	{
-// 		temp = *env;
-// 		while (temp->next)
-// 			temp = temp->next;
-// 		temp->next = element;
-// 	}
-// }
-int	ft_isalnum_env(char *s)
+void	ft_export(t_command **cmd, t_env_copy *env)
 {
-	int i = 0;
-	if (!s[i])
-		return (0);
-	while (s[i] &&  ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') ||
-		 (s[i] == '_') ))
-	{
-		i++;
-	}
-			
-	if (!s[i])
-		return (1);
-	else
-		return (0);
-	return (0);
-}
-void    ft_export(t_command **cmd, t_env_copy *env)
-{
-    int 	i;
-    int 	j;
+	int		j;
 	int		x;
 	char	*value;
-	char	*name;
 
+	value = NULL;
 	x = 1;
-    j = 0;
-    i = 0;
+	j = 0;
 	if (!cmd[0]->args[1])
-	{
-		while(env)
-		{
-			if (ft_strcmp(env->name, "?") == 0)
-			{
-				env = env->next;
-				continue ;
-			}
-			if (!env->value)
-			{
-				printf("declare -x %s\n", env->name);
-			}
-			else
-				printf("declare -x %s=\"%s\"\n", env->name, env->value);
-			env = env->next;
-		}
-	}
+		print_export(env);
 	while (cmd[0]->args[x])
 	{
-		j = 0;
-		i = 0;
-		while(cmd[0]->args[x] && cmd[0]->args[x][j] && cmd[0]->args[x][j] != '=')
-		{
-			j++;
-		}
-		name = ft_substr(cmd[0]->args[x], 0, j);
-		if (name[0] == '-')
-		{
-			dprintf(2, "bash: export: %c%c: invalid option\n", name[0],name[1]);
-			update_environment(env, "?", "2");
-			x++;
-		}
-
-		else if (!ft_isalnum_env(name))
-		{
-			dprintf(2, "bash: export: `%s': not a valid identifier\n", cmd[0]->args[x]);
-			update_environment(env, "?", "1");
-			x++;
-		}
+		if (cmd[0]->args[x][j] == '$')
+			export_args(env, value, j, cmd[0]->args[x] + 1);
 		else
-		{
-			j++;
-			while (cmd[0]->args[x] && cmd[0]->args[x][i])
-			{
-				i++;
-			}
-			if (!(cmd[0]->args[x][j - 1]))
-			{
-				value = NULL;
-			}
-			else
-				value = ft_substr(cmd[0]->args[x], j, i-j);
-			update_environment(env, name, value);
-			x++;
-		}
+			export_args(env, value, j, cmd[0]->args[x]);
+		x++;
 	}
-    // while(cmd[0]->args[i])
-    // {
-    // }
 }
-

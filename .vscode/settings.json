@@ -1,9 +1,0 @@
-{
-	"files.associations": {
-		"sstream": "c",
-		"libft.h": "c",
-		"header.h": "c"
-	},
-	"editor.defaultFormatter": "ms-vscode.cpptools",
-	"editor.formatOnSave": true
-}

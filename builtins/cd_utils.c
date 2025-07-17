@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 02:21:15 by mboutahi          #+#    #+#             */
+/*   Updated: 2025/07/16 11:41:25 by mboutahi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../header.h"
 
-t_env_copy *new_node_pwd(char *name, char *value)
+t_env_copy	*new_node_pwd(char *name, char *value)
 {
 	t_env_copy	*tokens;
 
@@ -14,7 +25,7 @@ t_env_copy *new_node_pwd(char *name, char *value)
 	return (tokens);
 }
 
-void    add_to_list_pwd(t_env_copy *env,char *name, char *value)
+void	add_to_list_pwd(t_env_copy *env, char *name, char *value)
 {
 	t_env_copy	*element;
 	t_env_copy	*temp;
@@ -23,9 +34,7 @@ void    add_to_list_pwd(t_env_copy *env,char *name, char *value)
 	if (!element)
 		exit(1);
 	if ((env) == NULL)
-	{
 		(env) = element;
-	}
 	else
 	{
 		temp = env;
@@ -33,4 +42,75 @@ void    add_to_list_pwd(t_env_copy *env,char *name, char *value)
 			temp = temp->next;
 		temp->next = element;
 	}
+}
+
+void	print_cd_err(t_env_copy *env)
+{
+	char	*target;
+
+	target = get_home_direc(env);
+	if (!target)
+	{
+		ft_putstr_fd("bash: cd: HOME not set\n", 2);
+		update_environment(env, "?", "1");
+		return ;
+	}
+	if (*target == 0)
+	{
+		update_environment(env, "?", "0");
+		return ;
+	}
+}
+
+int	check_dir(char *str, t_env_copy *env)
+{
+	struct stat	check;
+
+	if (stat(str, &check) == -1)
+	{
+		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+		update_environment(env, "?", "1");
+		return (0);
+	}
+	if (!S_ISDIR(check.st_mode))
+	{
+		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": Not a directory\n", 2);
+		update_environment(env, "?", "1");
+		return (0);
+	}
+	return (1);
+}
+
+int	get_update_cwd(t_env_copy *env, char *target, char *old_cwd)
+{
+	char	new_cwd[MAX_PATH];
+
+	if (chdir(target) != 0)
+	{
+		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd(target, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+		update_environment(env, "?", "1");
+		return (0);
+	}
+	if (!getcwd(new_cwd, sizeof(new_cwd)))
+	{
+		perror("bash: cd: getcwd failed");
+		update_environment(env, "?", "1");
+		return (0);
+	}
+	if (update_env_pwd(new_cwd, env))
+		add_to_list_pwd(env, ft_strdup("PWD"), ft_strdup(new_cwd));
+	if (update_env_oldpwd(old_cwd, env))
+		add_to_list_pwd(env, ft_strdup("OLDPWD"), ft_strdup(old_cwd));
+	update_environment(env, "?", "0");
+	return (1);
 }
