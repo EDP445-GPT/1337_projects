@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:35:42 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 13:42:54 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 19:12:49 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	redirs_append(t_env_copy *env, t_command *cmd, int i)
 	close(fd);
 }
 
-void	handle_redirection(t_command *cmd, t_env_copy *env)
+int	handle_redirection(t_command *cmd, t_env_copy *env)
 {
 	int	i;
 	int	fd_herd;
@@ -60,10 +60,14 @@ void	handle_redirection(t_command *cmd, t_env_copy *env)
 	i = 0;
 	while (cmd->redirctions[i])
 	{
+		if (cmd->redirctions && cmd->redirctions[i]->file && cmd->redirctions[i]->file[0] == '\0')
+			return (0);
 		if (cmd->redirctions[i]->type == IN)
 			redirs_in(env, cmd, i);
 		else if (cmd->redirctions[i]->type == OUT)
+		{
 			redirs_out(env, cmd, i);
+		}
 		else if (cmd->redirctions[i]->type == APPEND)
 			redirs_append(env, cmd, i);
 		else if (cmd->redirctions[i]->type == HEREDOC)
@@ -74,4 +78,5 @@ void	handle_redirection(t_command *cmd, t_env_copy *env)
 		}
 		i++;
 	}
+	return (1);
 }

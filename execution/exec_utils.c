@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:11:16 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 15:57:52 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:08:13 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*find_path(t_env_copy *envp)
 	return (NULL);
 }
 
-char	*path_unset(int i, char *temp, char *cmd)
+char	*path_unset(char *temp, char *cmd)
 {
 	struct stat	checker;
 	char		cwd[MAX_PATH];
@@ -49,7 +49,6 @@ char	*path_unset(int i, char *temp, char *cmd)
 	if (stat(command_path, &checker) == 0)
 		return (command_path);
 	free(command_path);
-	i++;
 	return (NULL);
 }
 
@@ -86,12 +85,11 @@ char	*check_valid_path(char *path, char *cmd)
 	sub_paths = NULL;
 	i = 0;
 	if (!path)
-		return (path_unset(i, temp, cmd));
+		return (path_unset(temp, cmd));
 	sub_paths = ft_split(path, ':');
 	if (!sub_paths)
 		return (NULL);
 	result = path_set(i, temp, sub_paths, cmd);
 	free_paths(sub_paths);
 	return (result);
-	return (cmd);
 }

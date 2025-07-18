@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:25:45 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 18:22:45 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:20:43 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,25 @@ char	*ft_expand_result(char *s, int i, char *var_name, t_env_copy *env)
 	char	*var_value;
 	char	*result;
 	char	*tmp2;
+	char	*substr_free;
 
 	tmp = ft_substr(s, 0, i);
 	var_value = ft_get_env_value(var_name, env);
 	if (!var_value)
-		tmp2 = ft_strjoin(tmp, ft_strdup(""));
+	{
+		tmp2 = ft_strdup(tmp);
+		free(tmp);
+	}
 	else
+	{
 		tmp2 = ft_strjoin(tmp, var_value);
-	result = ft_strjoin(tmp2,
-			ft_substr(s + i + 1 + ft_strlen(var_name), 0, ft_strlen(s)));
-	free(tmp);
+		free(tmp);
+	}
+	substr_free = ft_substr(s + i + 1 + ft_strlen(var_name), 0, ft_strlen(s));
+	result = ft_strjoin(tmp2, substr_free);
 	free(tmp2);
 	free(s);
+	free(substr_free);
 	return (result);
 }
 

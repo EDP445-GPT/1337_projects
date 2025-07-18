@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_Redirs_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 12:53:08 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 18:29:30 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 21:58:22 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ void	handle_redirs_file(t_command **cmd, t_parse *pr, char *s)
 		{
 			write(2, "ambiguous redirect\n", 20);
 			update_environment(pr->env, "?", "1");
+			cmd[pr->j]->redirctions[pr->k]->file = ft_strdup("");
 		}
-		cmd[pr->j]->redirctions[pr->k]->file = res[0];
+		else
+			cmd[pr->j]->redirctions[pr->k]->file = res[0];
 	}
 	else
 		cmd[pr->j]->redirctions[pr->k]->file = 
@@ -71,7 +73,8 @@ void	handle_redirs_file(t_command **cmd, t_parse *pr, char *s)
 void	handle_param_after_herdoc(t_command **cmd, t_parse *pr,
 							char **arguments)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	i = 1;
 	while (arguments[i])
@@ -82,8 +85,12 @@ void	handle_param_after_herdoc(t_command **cmd, t_parse *pr,
 			i++;
 			continue ;
 		}
-		cmd[pr->j]->args[0] = ft_strjoin(cmd[pr->j]->args[0], " ");
-		cmd[pr->j]->args[0] = ft_strjoin(cmd[pr->j]->args[0], arguments[i]);
+		tmp = cmd[pr->j]->args[0]; // change here
+		cmd[pr->j]->args[0] = ft_strjoin(tmp, " ");
+		free(tmp); // change here
+		tmp = cmd[pr->j]->args[0]; // change here
+		cmd[pr->j]->args[0] = ft_strjoin(tmp, arguments[i]);
+		free(tmp); // change here
 		i++;
 	}
 }
@@ -94,7 +101,9 @@ void	handle_herdoc_delimiter(t_command **cmd, t_parse *pr, char *s)
 
 	args = ft_split_args_file_qoute(s);
 	cmd[pr->j]->redirctions[pr->k]->file = ft_strdup(args[0]);
-	args = ft_split_args_file(s);
+	free_envp_array(args);
+	args = ft_split_args_file(s); // change here
 	if (args[1])
 		handle_param_after_herdoc(cmd, pr, args);
+	free_envp_array(args); // change here
 }

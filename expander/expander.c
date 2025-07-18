@@ -67,13 +67,8 @@ char	*qoute_skipper(char *s, char *str)
 
 char	*skip_qoute(char *str)
 {
-	int		i;
-	int		j;
-	int		double_flag;
-	int		single_flag;
 	char	*s;
 
-	double_flag = ((i = 0), (j = 0), (single_flag = 0), 0);
 	s = malloc(sizeof(char) * (skip_qoute_counter(str) + 1));
 	if (!s)
 	{
@@ -91,11 +86,9 @@ char	*ft_expand(char *s, t_env_copy *env)
 {
 	int		single_flag;
 	int		double_flag;
-	char	*tmp;
 
 	single_flag = 0;
 	double_flag = 0;
-	tmp = NULL;
 	if (!s)
 		return (NULL);
 	s = ft_expand_util(ft_strdup(s), env, single_flag,

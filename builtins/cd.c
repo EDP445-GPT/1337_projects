@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 11:37:37 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/16 11:40:57 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 18:01:41 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,10 @@
 
 int	update_env_pwd(char *new_cwd, t_env_copy *env)
 {
-	int	flag;
-
-	flag = 0;
 	while (env)
 	{
 		if (ft_strcmp("PWD", env->name) == 0)
 		{
-			flag = 1;
 			free(env->value);
 			env->value = strdup(new_cwd);
 			return (0);
@@ -33,14 +29,10 @@ int	update_env_pwd(char *new_cwd, t_env_copy *env)
 
 int	update_env_oldpwd(char *old_cwd, t_env_copy *env)
 {
-	int	flag;
-
-	flag = 0;
 	while (env)
 	{
 		if (ft_strcmp("OLDPWD", env->name) == 0)
 		{
-			flag = 1;
 			free(env->value);
 			env->value = strdup(old_cwd);
 			return (0);
@@ -78,6 +70,6 @@ void	ft_cd(t_command **cmd, t_env_copy *env)
 		free(old_cwd);
 		return ;
 	}
-	if (!get_update_cwd(env, target, old_cwd))
+	if (!get_update_cwd(env, target, old_cwd, cmd))
 		free(old_cwd);
 }

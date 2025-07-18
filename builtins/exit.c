@@ -6,15 +6,15 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 02:07:45 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 17:51:55 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 18:01:56 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header.h"
 
-int count_length(char **var)
+int	count_length(char **var)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (var[i])
@@ -22,9 +22,9 @@ int count_length(char **var)
 	return (i);
 }
 
-int contain_char(char *str)
+int	contain_char(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
@@ -38,9 +38,9 @@ int contain_char(char *str)
 	return (0);
 }
 
-int valid_argument(char **var)
+int	valid_argument(char **var)
 {
-	int length;
+	int	length;
 
 	length = count_length(var);
 	if (length == 0)
@@ -52,40 +52,50 @@ int valid_argument(char **var)
 	return (2);
 }
 
-void print_exiterr(char *str, t_env_copy *env)
+void	print_exiterr(char *str, t_env_copy *env, t_command **cmd)
 {
 	ft_putstr_fd("bash: exit: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
 	update_environment(env, "?", "255");
+	free_env(env);
+	free_cmd(cmd);
 	exit(255);
 }
 
-void ft_exit(char **arguments, t_env_copy *env)
+void	exit_util_first(t_command **cmd, t_env_copy *env, char *argument)
 {
-	int flag;
-	char *exit_code;
+		int		code;
 
-	flag = valid_argument(arguments + 1);
+		code = ft_atoi(argument);
+		 set_exit_status(env, code);
+		free_env(env);
+		free_cmd(cmd);
+		exit(code);
+}
+void	ft_exit(t_env_copy *env, t_command **cmd, int i)
+{
+	int		flag;
+
+	flag = valid_argument(cmd[i]->args + 1);
 	printf("exit\n");
 	if (flag == 1)
-		print_exiterr(arguments[1], env);
+		print_exiterr(cmd[i]->args[1], env, cmd);
 	else if (flag == 0)
 	{
 		stder("bash: exit: too many arguments\n", 2);
 		update_environment(env, "?", "1");
-		return;
+		return ;
 	}
 	else if (flag == 2)
 	{
-		exit_code = ft_itoa(ft_atoi(arguments[1]));
-		update_environment(env, "?", exit_code);
-		free(exit_code);
-		exit(ft_atoi(arguments[1]));
+		exit_util_first(cmd, env, cmd[i]->args[1]);
 	}
 	else
 	{
 		update_environment(env, "?", "0");
+		free_env(env);
+		free_cmd(cmd);
 		exit(0);
 	}
 }

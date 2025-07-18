@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 18:01:06 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 13:27:08 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 21:45:30 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void	ft_parser(t_tokens *tokens, t_env_copy *p)
 	t_command	**cmd;
 	t_parse		*pr;
 	t_parse		pr_data;
+	t_tokens	*tmp; //change here
 
+	tmp = tokens; // change here
 	pr = &pr_data;
 	init_parser(pr, p);
 	if (!tokens)
@@ -59,6 +61,8 @@ void	ft_parser(t_tokens *tokens, t_env_copy *p)
 			tokens = handle_pipe_token(cmd, pr, tokens);
 	}
 	finalize_last_command(cmd, pr);
+	free_tokens_list(tmp); // change here this function use to free tokens after the while loop which become null
 	if (heredoc(cmd, p))
 		exec_command(cmd, p);
+	free_cmd(cmd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:21:01 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/14 12:05:44 by mmaarafi         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:55:19 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*ft_substr_expand(char const *s, unsigned int start, size_t len)
 	int				length;
 
 	if (!s)
-		return (ft_strdup("      "));
+		return (ft_strdup(""));
 	s_size = ft_strlen(s);
 	if (start >= s_size)
 		return (ft_strdup(""));

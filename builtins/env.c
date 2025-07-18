@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:00:45 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 16:00:48 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 21:36:33 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,19 @@ void	free_env(t_env_copy *env)
 		temp = env;
 		env = env->next;
 		free(temp->name);
+		free(temp->value);
+		free(temp);
+	}
+}
+
+void	free_tokens_list(t_tokens *tokens)
+{
+	t_tokens	*temp;
+
+	while (tokens)
+	{
+		temp = tokens;
+		tokens = tokens->next;
 		free(temp->value);
 		free(temp);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 13:10:01 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/14 16:40:32 by mmaarafi         ###   ########.fr       */
+/*   Updated: 2025/07/18 18:59:49 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,17 @@ void	signal_handler(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
-
+void	check_leaks(void)
+{
+	system("leaks minishell");
+}
 int	main(int ac, char **av, char **envp)
 {
 	char		*str;
 	t_env_copy	*ptr;
-
+	char		*exit_stat;
+	int			exit_int;
+	// atexit(check_leaks);
 	(void)av;
 	if (ac != 1)
 		return (-1);
@@ -63,13 +68,17 @@ int	main(int ac, char **av, char **envp)
 		str = readline("$> ");
 		if (!str)
 		{
+			exit_stat = ft_get_env_value("?", ptr);
+			exit_int = atoi(exit_stat);
+			// free_env(ptr);
 			printf("exit\n");
-			exit(ft_atoi(ft_get_env_value("?", ptr)));
+			exit(exit_int);
 		}
 		if (!lexer(str, ptr))
 			continue ;
 		ft_parser(tokenizer(str), ptr);
 		add_history(str);
 	}
+		clear_history();
 	return (0);
 }

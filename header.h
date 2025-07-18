@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 14:56:54 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 20:51:58 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 21:36:50 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <ctype.h>
+# include <termios.h>
 
 # define MAX_PATH 1024
 
@@ -87,6 +88,7 @@ typedef struct s_exec
 	int		pipe_fd[2];
 	int		i;
 	char	**envp;
+	int		prev_pipe;
 }	t_exec;
 
 typedef struct s_parse
@@ -121,7 +123,7 @@ char		*ft_expand( char *s, t_env_copy *p);
 char		**ft_split_args(char *str, t_env_copy *env);
 char		**struct_to_arr_env(t_env_copy *env);
 void		exec_command(t_command **cmd, t_env_copy *env);
-void		ft_pwd(t_env_copy *env);
+void		ft_pwd(t_env_copy *env, t_command **cmd);
 char		*find_path(t_env_copy *envp);
 void		ft_export(t_command **cmd, t_env_copy *env);
 void		ft_cd(t_command **cmd, t_env_copy *env); 
@@ -129,16 +131,17 @@ void		update_environment(t_env_copy *env, char *key, char *new_value);
 void		lst_delete_node(t_env_copy **lst, t_env_copy *node);
 void		ft_echo(char **argument);
 void		ft_env(t_env_copy *env);
-void		ft_exit(char **arguments, t_env_copy *env);
+void		ft_exit(t_env_copy *env, t_command **cmd, int i);
 void		ft_unset(t_env_copy *env, char **var);
 t_env_copy	*find_key(t_env_copy *env, char *key);
 void		*heredoc(t_command **cmd, t_env_copy *env);
-void		handle_redirection(t_command *cmd, t_env_copy *env);
+int			handle_redirection(t_command *cmd, t_env_copy *env);
 char		*ft_substr_expand(char const *s, unsigned int start, size_t len);
 char		**ft_split_args_file(char *str);
 char		*skip_qoute(char *str);
 char		*check_valid_path(char *path, char *cmd);
-void		add_to_list_pwd(t_env_copy *env, char *name, char *value);
+void		add_to_list_pwd(t_env_copy *env, char *name, char *value, 
+				t_command **cmd);
 t_env_copy	*new_node_pwd(char *name, char *value);
 int			check_herdoc(t_tokens *tokens);
 char		*ft_expand_herdoc(char *s, t_env_copy *env);
@@ -155,7 +158,8 @@ void		print_invalid_export_id(char *name, t_env_copy *env);
 void		export_args(t_env_copy *env, char *value, int j, char *args);
 void		print_cd_err(t_env_copy *env);
 int			check_dir(char *str, t_env_copy *env);
-int			get_update_cwd(t_env_copy *env, char *target, char *old_cwd);
+int			get_update_cwd(t_env_copy *env, char *target, char *old_cwd,
+				t_command **cmd);
 char		*get_home_direc(t_env_copy *env);
 int			update_env_pwd(char *new_cwd, t_env_copy *env);
 int			update_env_oldpwd(char *old_cwd, t_env_copy *env);
@@ -191,11 +195,40 @@ t_tokens	*handle_heredoc_token(t_command **cmd, t_parse *pr,
 				t_tokens *tokens);
 t_tokens	*handle_append_redirect(t_command **cmd, t_parse *pr,
 				t_tokens *tokens);
-void		signal_handler();
+void		signal_handler(int sig);
 char		*ft_expand_util_herdoc(char *s, t_env_copy *env);
 char		*ft_expand_herdoc(char *s, t_env_copy *env);
 char		*ft_get_env_value(char *name, t_env_copy *env);
 char		*get_var(char *s);
 char		*ft_expand_result(char *s, int i, char *var_name, t_env_copy *env);
 void		cmd_not_found(t_env_copy *env, t_command **cmd, int i);
+t_env_copy	*ft_get_env_node(char *name, t_env_copy *env);
+int			is_builtin(char *cmd);
+char		**struct_to_arr_env(t_env_copy *env);
+t_env_copy	*ft_get_env_node(char *name, t_env_copy *env);
+int			mutiple_builtins(t_command **cmd, int i, t_env_copy *env);
+int			single_builtin(t_command **cmd, t_env_copy *env);
+void		check_for_exit(int status, t_env_copy *env);
+void		check_execverr(t_command **cmd, int i, t_env_copy *env,
+						char *command);
+char		*check_cmd_path(t_command **cmd, t_env_copy *env,
+				int i, char *path);
+int			cmd_hard_coded(t_command **cmd, t_env_copy *env);
+void		print_execution_err(char *s, char *str);
+void		print_is_dir(char *s);
+void		check_exit_type(t_exec *exe, t_env_copy *env);
+int			delimiter_check(char *str);
+int			*open_fd(void);
+void		helper_function1(const char *str, int *i, int *single_qoute,
+				int *double_qoute);
+void		print_filename_argerr(t_command **cmd);
+void		free_env(t_env_copy *env);
+void		free_cmd(t_command **cmd);
+void		set_exit_status(t_env_copy *env, int exit_status);
+void		free_cmd_env(t_command **cmd, t_env_copy *env);
+void		free_envp_array(char **envp);
+int			inside_charset(char c);
+int			find_token_end(const char *str, int start, int *single_quote, int *double_quote);
+int			count_words(const char *str);
+void		free_tokens_list(t_tokens *tokens);
 #endif

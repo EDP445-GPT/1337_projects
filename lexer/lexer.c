@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 19:30:01 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/15 21:08:33 by mmaarafi         ###   ########.fr       */
+/*   Updated: 2025/07/18 17:56:32 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	free_tokens(char **strs)
 		i++;
 	}
 	free(strs);
-}  
+}
 
 int	check_pipes(char **tokens)
 {
@@ -96,15 +96,13 @@ int	check_redirections(char **tokens)
 int	lexer(char *str, t_env_copy *env)
 {
 	char	**tokens;
-	int		i;
 
-	i = 0;
 	if (!str)
 		return (1);
 	if (!check_quotes(str))
 		return (update_environment(env, "?", "1"),
 			stder("syntax error: unclosed quotes\n", 2), 0);
-	tokens = lexer_custom_split(str);
+	tokens = custom_split(str);
 	if (!tokens)
 		return (update_environment(env, "?", "1"), 0);
 	if (!tokens[0])

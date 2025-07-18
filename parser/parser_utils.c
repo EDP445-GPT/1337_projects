@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:20:54 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 13:25:58 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 21:58:32 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,14 @@ void	init_parser(t_parse *pr, t_env_copy *p)
 
 void	finalize_last_command(t_command **cmd, t_parse *pr)
 {
+	char *tmp; // change here
+
 	cmd[pr->j]->redirctions[pr->k] = NULL;
 	pr->k = 0;
 	if (cmd[pr->j]->args[0])
+	{
+		tmp = cmd[pr->j]->args[0]; // change here
 		cmd[pr->j]->args = ft_split_args(cmd[pr->j]->args[0], pr->env);
+		free(tmp); // change here
+	}
 }

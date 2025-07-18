@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 04:08:35 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 16:02:02 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:54:50 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	print_invalid_export_option(char *name, t_env_copy *env)
 	ft_putchar_fd(name[1], 2);
 	ft_putstr_fd(": invalid option\n", 2);
 	update_environment(env, "?", "2");
+	free(name);
 }
 
 void	print_invalid_export_id(char *name, t_env_copy *env)
@@ -72,6 +73,7 @@ void	print_invalid_export_id(char *name, t_env_copy *env)
 	ft_putstr_fd(name, 2);
 	ft_putstr_fd("': not a valid identifier\n", 2);
 	update_environment(env, "?", "1");
+	free(name);
 }
 
 void	export_args(t_env_copy *env, char *value, int j, char *args)

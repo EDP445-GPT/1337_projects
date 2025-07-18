@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 02:21:15 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/16 11:41:25 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:41:40 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,27 @@ t_env_copy	*new_node_pwd(char *name, char *value)
 	return (tokens);
 }
 
-void	add_to_list_pwd(t_env_copy *env, char *name, char *value)
+void	add_to_list_pwd(t_env_copy *env, char *name, char *value,
+				t_command **cmd)
 {
 	t_env_copy	*element;
 	t_env_copy	*temp;
 
 	element = new_node_pwd(name, value);
 	if (!element)
+	{
+		free_cmd(cmd);
+		free_env(env);
+		free(name);
+		free(value);
 		exit(1);
-	if ((env) == NULL)
-		(env) = element;
+	}
+	// if (name)
+	// 	free(name);
+	// if (value)
+	// 	free(value);
+	if (env == NULL)
+		env = element;
 	else
 	{
 		temp = env;
@@ -87,7 +98,7 @@ int	check_dir(char *str, t_env_copy *env)
 	return (1);
 }
 
-int	get_update_cwd(t_env_copy *env, char *target, char *old_cwd)
+int	get_update_cwd(t_env_copy *env, char *target, char *old_cwd, t_command **cmd)
 {
 	char	new_cwd[MAX_PATH];
 
@@ -108,9 +119,9 @@ int	get_update_cwd(t_env_copy *env, char *target, char *old_cwd)
 		return (0);
 	}
 	if (update_env_pwd(new_cwd, env))
-		add_to_list_pwd(env, ft_strdup("PWD"), ft_strdup(new_cwd));
+		add_to_list_pwd(env, ft_strdup("PWD"), ft_strdup(new_cwd), cmd);
 	if (update_env_oldpwd(old_cwd, env))
-		add_to_list_pwd(env, ft_strdup("OLDPWD"), ft_strdup(old_cwd));
+		add_to_list_pwd(env, ft_strdup("OLDPWD"), ft_strdup(old_cwd), cmd);
 	update_environment(env, "?", "0");
 	return (1);
 }

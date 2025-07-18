@@ -35,9 +35,6 @@ char	*ft_expand_util_herdoc(char *s, t_env_copy *env)
 
 char	*ft_expand_herdoc(char *s, t_env_copy *env)
 {
-	char	*tmp;
-
-	tmp = NULL;
 	if (!s)
 		return (NULL);
 	s = ft_expand_util_herdoc(ft_strdup(s), env);

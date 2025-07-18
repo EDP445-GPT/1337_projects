@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 13:01:30 by mboutahi          #+#    #+#             */
-/*   Updated: 2025/07/17 13:23:10 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 18:36:27 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,16 @@ t_command	**c_alocate(t_tokens *p)
 	i = c_count(p);
 	cmd = malloc(sizeof(t_command *) * (i + 1));
 	while (++v < i)
+	{
 		cmd[v] = malloc(sizeof(t_command));
+		if (!cmd[v])
+		{
+			while (--v >= 0)
+				free(cmd[v]);
+			free(cmd);
+			return (perror("malloc failed"), NULL);
+		}
+	}
 	cmd[v] = NULL;
 	if (!cmd)
 		return (perror("malloc failed"), NULL);

@@ -6,7 +6,7 @@
 /*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 11:59:37 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/17 15:09:55 by mboutahi         ###   ########.fr       */
+/*   Updated: 2025/07/18 14:24:56 by mboutahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ long long	ft_atoi(char *str)
 	}
 	while (*str >= '0' && *str <= '9')
 	{
-		if (result > (LLONG_MAX - (*str - '0')) / 10)
+		if (result > (9223372036854775807 - (*str - '0')) / 10)
 			handle_overflow(ptr);
 		result = result * 10 + *str++ - '0';
 	}
