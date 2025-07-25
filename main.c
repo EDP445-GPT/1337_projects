@@ -1,84 +1,107 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mboutahi <mboutahi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 13:10:01 by mmaarafi          #+#    #+#             */
-/*   Updated: 2025/07/18 18:59:49 by mboutahi         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "header.h"
 
-t_env_copy	*environment_copy(char **envp)
+void philo_thinking(t_philosopher *philo)
 {
-	int			i;
-	t_env_copy	*original_ptr;
-	t_env_copy	*ptr;
+	int time;
+	struct timeval current_time;
+	
+	gettimeofday(&current_time, NULL);
+	time = current_time.tv_usec - philo->last_meal;
+	printf("%d %d isthinking\n", time / 1000, philo->philo_id);
+}
+
+// void philo_eating(t_philosopher *philo)
+// {
+// 	int time;
+// 	struct timeval current_time;
+	
+// 	gettimeofday(&current_time, NULL);
+// 	time = current_time.tv_usec - philo->last_meal;
+// 	printf("%d %d iseating\n", time / 1000, philo->philo_id);
+// }
+
+void print_philo_picked_fork(t_philosopher *philo)
+{
+	int				time;
+	struct timeval	current_time;
+
+	gettimeofday(&current_time, NULL);
+	time = current_time.tv_usec - philo->last_meal;
+	printf("%d %d has taken a fork\n", time / 1000, philo->philo_id);
+}
+
+void philo_pick_forks(t_philosopher *philo)
+{
+	int	left_fork;
+	int	right_fork;
+
+	left_fork = philo->left_fork;
+	right_fork = philo->right_fork;
+	pthread_mutex_lock(&philo->param->forks[right_fork]);
+		print_philo_picked_fork(philo);
+	pthread_mutex_lock(&philo->param->forks[left_fork]);
+		print_philo_picked_fork(philo);
+}
+
+void *philo_routine(void *ptr)
+{
+	t_philosopher	*philo;
+	int				i;
 
 	i = 0;
-	if (!(*envp))
+	philo = (t_philosopher *)ptr;
+	if(philo->philo_id % 2 == 0)
+		usleep(1000);
+	while(i < philo->param->must_eat)
 	{
-		ptr = lstnew(ft_strdup("?"), ft_strdup("0"));
-		return (ptr);
-	}
-	original_ptr = lstnew(ft_strdup_name(envp[i]), ft_strdup_value(envp[i]));
-	i++;
-	while (envp[i])
-	{
-		ptr = lstnew(ft_strdup_name(envp[i]), ft_strdup_value(envp[i]));
-		lstadd_back(&original_ptr, ptr);
+		philo_thinking(philo);
+		philo_pick_forks(philo);
 		i++;
 	}
-	ptr = lstnew(ft_strdup("?"), ft_strdup("0"));
-	lstadd_back(&original_ptr, ptr);
-	return (original_ptr);
+	return (NULL);
 }
 
-void	signal_handler(int sig)
+void create_philos_threads(t_parameters *ptr)
 {
-	(void) sig;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-void	check_leaks(void)
-{
-	system("leaks minishell");
-}
-int	main(int ac, char **av, char **envp)
-{
-	char		*str;
-	t_env_copy	*ptr;
-	char		*exit_stat;
-	int			exit_int;
-	// atexit(check_leaks);
-	(void)av;
-	if (ac != 1)
-		return (-1);
-	ptr = environment_copy(envp);
-	rl_catch_signals = 0;
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
-	while (1)
+	t_philosopher	philos[ptr->number_of_philosophers];
+	struct timeval	current_meal;
+	int				i;
+	int				last_meal;
+
+	ptr->forks = initialize_forks_mutxes(ptr);
+	gettimeofday(&current_meal, NULL);
+	last_meal = current_meal.tv_usec;
+	i = 0;
+	while(i < ptr->number_of_philosophers)
 	{
-		str = readline("$> ");
-		if (!str)
-		{
-			exit_stat = ft_get_env_value("?", ptr);
-			exit_int = atoi(exit_stat);
-			// free_env(ptr);
-			printf("exit\n");
-			exit(exit_int);
-		}
-		if (!lexer(str, ptr))
-			continue ;
-		ft_parser(tokenizer(str), ptr);
-		add_history(str);
+		philos[i].philo_id = i + 1;
+		philos[i].left_fork = i + 1;
+		philos[i].right_fork = (((i + 1) - 2 + ptr->number_of_philosophers) % ptr->number_of_philosophers) + 1;
+		philos[i].last_meal = last_meal;
+		philos[i].param = ptr;
+		philos[i].thread_ret = pthread_create(&philos[i].thread_id, NULL, philo_routine, (void *) &philos[i]);
+		i++;
 	}
-		clear_history();
+	i = 0;
+	while (i < ptr->number_of_philosophers)
+	{
+		pthread_join(philos[i].thread_id, NULL);
+		i++;
+	}
+}
+
+int main(int ac, char **av)
+{
+	t_parameters	*param;
+
+	param = malloc(sizeof(t_parameters));
+	if (ac == 5 || ac == 6)
+	{
+		if (!check_parameter(ac, av, param))
+			return (0);
+		initialize_parameters(ac, av, param);
+		create_philos_threads(param);
+		// printf("%d\n%d\n%d\n%d\n%d\n", param->number_of_philosophers, param->time_to_die, param->time_to_eat, param->time_to_sleep, param->must_eat);
+	}
 	return (0);
 }

@@ -18,10 +18,10 @@ BONUS_OBJECT_FILES = $(patsubst %.c,%.o,$(BONUS))
 all: $(NAME)
 
 $(NAME): $(OBJECT_FILES)
-	ar -rcs $(NAME) $(OBJECT_FILES)
+	@ar -rcs $(NAME) $(OBJECT_FILES)
 
 %.o: %.c libft.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 bonus: .bonus_f
 

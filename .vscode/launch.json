@@ -1,27 +1,66 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug mini_shell",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/minishell",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "text": "set follow-fork-mode child"
-                }
-            ],
-            "preLaunchTask": "build my elf"
-        },
-    ]
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "(UDB)  Launch",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/philo",
+			"args": ["3", "200", "200", "200", "5"],
+			"stopAtEntry": true,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			],
+			"miDebuggerPath": "udb",
+			"miDebuggerArgs": "",
+			"logging": {
+				"trace": false,
+				"traceResponse": false,
+				"engineLogging": false
+			},
+			"udb": "live",
+			"timezone": "",
+			"udbConfiguration": {}
+		},
+		{
+			"name": "(UDB)  Replay an Undo recording",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/a.out",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			],
+			"miDebuggerPath": "udb",
+			"miDebuggerArgs": "",
+			"logging": {
+				"trace": false,
+				"traceResponse": false,
+				"engineLogging": false
+			},
+			"udb": "replay",
+			"timezone": "",
+			"udbConfiguration": {}
+		}
+	]
 }
