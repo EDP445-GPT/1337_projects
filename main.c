@@ -7,7 +7,7 @@ void philo_thinking(t_philosopher *philo)
 	
 	gettimeofday(&current_time, NULL);
 	time = current_time.tv_usec - philo->last_meal;
-	printf("%d %d isthinking\n", time / 1000, philo->philo_id);
+	printf("%d %d is thinking\n", time / 1000, philo->philo_id);
 }
 
 // void philo_eating(t_philosopher *philo)
@@ -52,7 +52,7 @@ void *philo_routine(void *ptr)
 	philo = (t_philosopher *)ptr;
 	if(philo->philo_id % 2 == 0)
 		usleep(1000);
-	while(i < philo->param->must_eat)
+	while(1)
 	{
 		philo_thinking(philo);
 		philo_pick_forks(philo);
