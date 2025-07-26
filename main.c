@@ -37,9 +37,9 @@ void philo_put_forks(t_philosopher *philo)
 void *philo_routine(void *ptr)
 {
 	t_philosopher	*philo;
-	int				i;
+	// int				i;
 
-	i = 0;
+	// i = 0;
 	philo = (t_philosopher *)ptr;
 	if(philo->philo_id % 2 == 0)
 		usleep(1000);
@@ -48,7 +48,7 @@ void *philo_routine(void *ptr)
 		philo_activity(philo, "is thinking");
 		philo_pick_forks(philo);
 		philo_put_forks(philo);
-		i++;
+		// i++;
 	}
 	return (NULL);
 }
