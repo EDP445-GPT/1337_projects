@@ -1,33 +1,13 @@
 #include "header.h"
 
-void philo_thinking(t_philosopher *philo)
-{
-	int time;
-	struct timeval current_time;
-	
-	gettimeofday(&current_time, NULL);
-	time = current_time.tv_usec - philo->last_meal;
-	printf("%d %d is thinking\n", time / 1000, philo->philo_id);
-}
-
-// void philo_eating(t_philosopher *philo)
-// {
-// 	int time;
-// 	struct timeval current_time;
-	
-// 	gettimeofday(&current_time, NULL);
-// 	time = current_time.tv_usec - philo->last_meal;
-// 	printf("%d %d iseating\n", time / 1000, philo->philo_id);
-// }
-
-void print_philo_picked_fork(t_philosopher *philo)
+void philo_activity(t_philosopher *philo, char *str)
 {
 	int				time;
 	struct timeval	current_time;
 
 	gettimeofday(&current_time, NULL);
 	time = current_time.tv_usec - philo->last_meal;
-	printf("%d %d has taken a fork\n", time / 1000, philo->philo_id);
+	printf("%d %d %s\n", time / 1000, philo->philo_id, str);
 }
 
 void philo_pick_forks(t_philosopher *philo)
@@ -38,9 +18,20 @@ void philo_pick_forks(t_philosopher *philo)
 	left_fork = philo->left_fork;
 	right_fork = philo->right_fork;
 	pthread_mutex_lock(&philo->param->forks[right_fork]);
-		print_philo_picked_fork(philo);
+		philo_activity(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->param->forks[left_fork]);
-		print_philo_picked_fork(philo);
+		philo_activity(philo, "has taken a fork");
+}
+
+void philo_put_forks(t_philosopher *philo)
+{
+	int	left_fork;
+	int	right_fork;
+
+	left_fork = philo->left_fork;
+	right_fork = philo->right_fork;
+	pthread_mutex_unlock(&philo->param->forks[right_fork]);
+	pthread_mutex_unlock(&philo->param->forks[left_fork]);
 }
 
 void *philo_routine(void *ptr)
@@ -54,8 +45,9 @@ void *philo_routine(void *ptr)
 		usleep(1000);
 	while(1)
 	{
-		philo_thinking(philo);
+		philo_activity(philo, "is thinking");
 		philo_pick_forks(philo);
+		philo_put_forks(philo);
 		i++;
 	}
 	return (NULL);
