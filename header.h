@@ -14,6 +14,7 @@ typedef struct s_parameters
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat;
+	unsigned long	start;
 	int				ac;
 	char			**av;
 	pthread_mutex_t	*forks;

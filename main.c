@@ -2,15 +2,19 @@
 
 void philo_activity(t_philosopher *philo, char *str)
 {
-	int				time;
-	struct timeval	current_time;
-
-	gettimeofday(&current_time, NULL);
-	time = current_time.tv_usec - philo->last_meal;
-	printf("%d %d %s\n", time / 1000, philo->philo_id, str);
+	printf("%d %d %s\n", (get_time() - philo->param->start), philo->philo_id, str);
 }
 
-void philo_pick_forks(t_philosopher *philo)
+void ft_sleep(unsigned long target)
+{
+	unsigned long time;
+
+	time = get_time();
+	while(get_time() - time < target)
+		usleep(100);
+}
+
+void philo_eat(t_philosopher *philo)
 {
 	int	left_fork;
 	int	right_fork;
@@ -21,15 +25,8 @@ void philo_pick_forks(t_philosopher *philo)
 		philo_activity(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->param->forks[left_fork]);
 		philo_activity(philo, "has taken a fork");
-}
-
-void philo_put_forks(t_philosopher *philo)
-{
-	int	left_fork;
-	int	right_fork;
-
-	left_fork = philo->left_fork;
-	right_fork = philo->right_fork;
+	ft_sleep(philo->param->time_to_eat);
+	printf();
 	pthread_mutex_unlock(&philo->param->forks[right_fork]);
 	pthread_mutex_unlock(&philo->param->forks[left_fork]);
 }
@@ -37,20 +34,27 @@ void philo_put_forks(t_philosopher *philo)
 void *philo_routine(void *ptr)
 {
 	t_philosopher	*philo;
-	// int				i;
 
-	// i = 0;
 	philo = (t_philosopher *)ptr;
 	if(philo->philo_id % 2 == 0)
-		usleep(1000);
+		usleep(500);
 	while(1)
 	{
 		philo_activity(philo, "is thinking");
 		philo_pick_forks(philo);
+		philo_activity(philo, "is eating");
 		philo_put_forks(philo);
-		// i++;
+		philo_activity(philo, "is sleeping");
 	}
 	return (NULL);
+}
+
+unsigned long get_time()
+{
+	struct timeval	current_meal;
+
+	gettimeofday(&current_meal, NULL);
+	return(current_meal.tv_sec * 1000 + current_meal.tv_usec / 1000);
 }
 
 void create_philos_threads(t_parameters *ptr)
@@ -58,19 +62,19 @@ void create_philos_threads(t_parameters *ptr)
 	t_philosopher	philos[ptr->number_of_philosophers];
 	struct timeval	current_meal;
 	int				i;
-	int				last_meal;
+	unsigned long	start;
 
 	ptr->forks = initialize_forks_mutxes(ptr);
 	gettimeofday(&current_meal, NULL);
-	last_meal = current_meal.tv_usec;
+	ptr->start = get_time();
 	i = 0;
 	while(i < ptr->number_of_philosophers)
 	{
 		philos[i].philo_id = i + 1;
 		philos[i].left_fork = i + 1;
 		philos[i].right_fork = (((i + 1) - 2 + ptr->number_of_philosophers) % ptr->number_of_philosophers) + 1;
-		philos[i].last_meal = last_meal;
 		philos[i].param = ptr;
+		philos[i].last_meal = 0;
 		philos[i].thread_ret = pthread_create(&philos[i].thread_id, NULL, philo_routine, (void *) &philos[i]);
 		i++;
 	}
