@@ -1,41 +1,33 @@
-NAME		= philo
+NAME = philo
 
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
 	CC       = cc
-
-	CFLAGS   = -Wall -Wextra -Werror
+	CFLAGS   = -Wall -Wextra -Werror #-fsanitize=threads
 else 
 	CC       = cc
-	CFLAGS   = -Wall -Wextra -Werror -g -pthread
+	CFLAGS   = -Wall -Wextra -Werror -g -pthread -fsanitize=leak
 endif
 
 RM			= rm -f
 HEADER		= ./header.h
-LIBFT		= ./includes/libft/libft.a
-
-SRCS		= main.c parsing.c
+SRCS		= main.c parsing.c atoi.c threads.c threads_utils.c
 
 OBJ_SRCS	= $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ_SRCS) $(LIBFT) $(HEADER)
-	$(CC) $(CFLAGS) $(OBJ_SRCS) $(LIBFT) -o $(NAME)
+$(NAME): $(OBJ_SRCS) $(HEADER)
+	$(CC) $(CFLAGS) $(OBJ_SRCS) -o $(NAME)
 
 %.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
-	@$(MAKE) -C ./includes/libft
-
 clean:
-	@$(MAKE) clean -C ./includes/libft
 	@$(RM) $(OBJ_SRCS)
 
 fclean: clean
-	@$(RM) $(LIBFT)
 	$(RM) $(NAME)
 
 re: fclean all

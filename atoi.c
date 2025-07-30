@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_toupper.c                                       :+:      :+:    :+:   */
+/*   atoi.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaarafi <mmaarafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/26 16:58:25 by mmaarafi          #+#    #+#             */
-/*   Updated: 2024/10/31 13:50:18 by mmaarafi         ###   ########.fr       */
+/*   Created: 2025/07/28 11:57:34 by mmaarafi          #+#    #+#             */
+/*   Updated: 2025/07/28 12:18:58 by mmaarafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "header.h"
 
-int	ft_toupper(int c)
+long long	ft_atoi(char *str)
 {
-	if (c >= 'a' && c <= 'z')
+	long long	result;
+	int			sign;
+
+	sign = 1;
+	result = 0;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
 	{
-		c = c - 32;
-		return (c);
+		if (*str++ == '-')
+			sign = sign * -1;
 	}
-	else
-		return (c);
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + *str++ - '0';
+		if (result > INT_MAX)
+			return (LONG_MAX);
+	}
+	return (result * sign);
 }
